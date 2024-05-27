@@ -1,5 +1,7 @@
 import scrapy
 
+from myanimelist.items import AnimeItem
+
 
 class TopanimeSpider(scrapy.Spider):
     name = "topanime"
@@ -12,27 +14,12 @@ class TopanimeSpider(scrapy.Spider):
             yield scrapy.Request(url, callback=self.parse_anime)
 
     def parse_anime(self, response):
-        title = response.css(".title-name strong::text").get()
-        title_english = response.css(".title-english::text").get()
-        score = response.css(".score-label::text").get()
-        rank = response.css(".ranked::text").get()
-        popularity = response.css(".popularity::text").get()
-        description_texts = response.css(
-            "p[itemprop='description']::text"
-        ).getall()
-        members = response.css(".members strong::text").get()
-        yield {
-            "title": title,
-            "title_english": title_english,
-            "score": score,
-            "rank": rank,
-            "popularity": popularity,
-            "description": " ".join(
-                [
-                    clean_text
-                    for text in description_texts
-                    if (clean_text := text.strip())
-                ]
-            ),
-            "members": members,
-        }
+        item = AnimeItem()
+        item["title"] = response.css(".title-name strong::text").get()
+        item["title_english"] = response.css(".title-english::text").get()
+        item["score"] = response.css(".score-label::text").get()
+        item["rank"] = response.css(".ranked::text").get()
+        item["popularity"] = response.css(".popularity::text").get()
+        item["description"] = response.css("p[itemprop='description']::text").getall()
+        item["members"] = response.css(".members strong::text").get()
+        yield item

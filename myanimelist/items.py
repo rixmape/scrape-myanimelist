@@ -6,7 +6,11 @@
 import scrapy
 
 
-class MyanimelistItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class AnimeItem(scrapy.Item):
+    title = scrapy.Field()
+    title_english = scrapy.Field()
+    score = scrapy.Field()
+    rank = scrapy.Field()
+    popularity = scrapy.Field()
+    description = scrapy.Field()
+    members = scrapy.Field()

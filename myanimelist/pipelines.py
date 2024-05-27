@@ -10,4 +10,11 @@ from itemadapter import ItemAdapter
 
 class MyanimelistPipeline:
     def process_item(self, item, spider):
+        item["description"] = " ".join(
+            [
+                clean_text
+                for text in item["description"]
+                if (clean_text := text.strip())
+            ]
+        )
         return item
