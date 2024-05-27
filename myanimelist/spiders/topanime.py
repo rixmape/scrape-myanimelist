@@ -18,8 +18,8 @@ class TopanimeSpider(scrapy.Spider):
         item["title"] = response.css(".title-name strong::text").get()
         item["title_english"] = response.css(".title-english::text").get()
         item["score"] = response.css(".score-label::text").get()
-        item["rank"] = response.css(".ranked::text").get()
-        item["popularity"] = response.css(".popularity::text").get()
-        item["description"] = response.css("p[itemprop='description']::text").getall()
+        item["rank"] = response.css(".ranked strong::text").get()
+        item["popularity"] = response.css(".popularity strong::text").get()
         item["members"] = response.css(".members strong::text").get()
+        item["description"] = response.css("p[itemprop='description']::text").getall()
         yield item
