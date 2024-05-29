@@ -10,3 +10,10 @@ To scrape the top anime titles, run the following command:
 cd myanimelist
 scrapy crawl -O output.json topanime
 ```
+
+## Roadmap
+
+- [x] Scrape top anime titles and their details
+- [ ] Scrape characters, voice actors, and staff
+- [ ] Scrape recommendations and interest stacks
+- [ ] Scrape reviews
