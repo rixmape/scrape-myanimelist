@@ -11,7 +11,11 @@ from itemadapter import ItemAdapter
 class MyanimelistPipeline:
     def process_item(self, item, spider):
         for key in item.fields:
-            if isinstance(item[key], str):
+            if (
+                key not in item
+                or not item[key]
+                or isinstance(item[key], str)
+            ):
                 continue
             texts = [
                 t.strip()
