@@ -10,11 +10,18 @@ from itemadapter import ItemAdapter
 
 class MyanimelistPipeline:
     def process_item(self, item, spider):
-        item["description"] = " ".join(
-            [
-                clean_text
-                for text in item["description"]
-                if (clean_text := text.strip())
+        for key in item.fields:
+            if isinstance(item[key], str):
+                continue
+            texts = [
+                t.strip()
+                for t in item[key]
+                if t.strip() and key not in t.lower()
             ]
-        )
+            if key in ["producers", "studios", "genres"]:
+                item[key] = ", ".join(texts)
+            elif key in ["score", "ranked"]:
+                item[key] = " ".join(texts[:1])
+            else:
+                item[key] = " ".join(texts)
         return item

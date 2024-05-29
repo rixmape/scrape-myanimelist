@@ -29,9 +29,18 @@ class TopanimeSpider(scrapy.Spider):
         item = AnimeItem()
         item["title"] = response.css(".title-name strong::text").get()
         item["title_english"] = response.css(".title-english::text").get()
-        item["score"] = response.css(".score-label::text").get()
-        item["rank"] = response.css(".ranked strong::text").get()
-        item["popularity"] = response.css(".popularity strong::text").get()
-        item["members"] = response.css(".members strong::text").get()
         item["description"] = response.css("p[itemprop='description']::text").getall()
+
+        for div in response.css(".spaceit_pad"):
+            label = div.css(".dark_text::text").get()
+            if label is None:
+                continue
+
+            key = label.lower().replace(":", "")
+            if key in item.fields:
+                if key in ["demographic", "producers", "studios", "genres"]:
+                    selector = "a::text"
+                else:
+                    selector = "::text"
+                item[key] = div.css(selector).getall()
         yield item
