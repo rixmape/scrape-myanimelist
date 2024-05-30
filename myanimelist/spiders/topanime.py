@@ -1,4 +1,5 @@
 import scrapy
+from scrapy.loader import ItemLoader
 
 from myanimelist.items import AnimeItem
 
@@ -29,10 +30,10 @@ class TopanimeSpider(scrapy.Spider):
                 yield scrapy.Request(next_page_url, callback=self.parse)
 
     def parse_anime(self, response):
-        item = AnimeItem()
-        item["title"] = response.css(".title-name strong::text").get()
-        item["title_english"] = response.css(".title-english::text").get()
-        item["description"] = response.css("p[itemprop='description']::text").getall()
+        loader = ItemLoader(item=AnimeItem(), response=response)
+        loader.add_css('title_original', '.title-name')
+        loader.add_css('title_english', '.title-english')
+        loader.add_css('description', "p[itemprop='description']")
 
         for div in response.css(".spaceit_pad"):
             label = div.css(".dark_text::text").get()
@@ -40,10 +41,10 @@ class TopanimeSpider(scrapy.Spider):
                 continue
 
             key = label.lower().replace(":", "")
-            if key in item.fields:
+            if key in loader.item.fields:
                 if key in ["demographic", "producers", "studios", "genres"]:
                     selector = "a::text"
                 else:
                     selector = "::text"
-                item[key] = div.css(selector).getall()
-        yield item
+                loader.add_value(key, div.css(selector).getall())
+        yield loader.load_item()
